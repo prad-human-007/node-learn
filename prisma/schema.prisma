@@ -14,6 +14,18 @@ datasource db {
 }
 
 model User {
-  id   String    @id @default(cuid())
+  id   String @id @default(cuid())
   name String
+  Post Post[]
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  author    User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    String
+
+  @@index([userId])
 }
