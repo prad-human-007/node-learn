@@ -14,18 +14,32 @@ datasource db {
 }
 
 model User {
-  id   String @id @default(cuid())
-  name String
-  Post Post[]
+  id            String          @id @default(cuid())
+  username      String          @unique
+  conversations Conversations[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  author    User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Conversations {
+  id        String     @id @default(cuid())
+  userID    User       @relation(fields: [userId], references: [id])
+  messages  Messages[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   userId    String
+}
 
-  @@index([userId])
+model Messages {
+  id              String        @id @default(cuid())
+  conversation    Conversations @relation(fields: [conversationsId], references: [id])
+  sender          Sender
+  content         String
+  createdAt       DateTime      @default(now())
+  conversationsId String
+}
+
+enum Sender {
+  AI
+  HUMAN
 }
